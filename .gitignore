@@ -1,0 +1,31 @@
+# Android / Gradle
+.gradle/
+build/
+**/build/
+local.properties
+captures/
+*.apk
+*.aab
+*.ap_
+*.dex
+.externalNativeBuild/
+.cxx/
+*.iml
+.idea/
+.kotlin/
+
+# Keystores and secrets — never commit
+*.jks
+*.keystore
+google-services.json
+google-services.json.*
+**/google-services.json
+
+# OS / editor
+.DS_Store
+*.swp
+
+# Local export scratch
+*.mp4
+*.png
+!app/src/main/res/**/*.png
