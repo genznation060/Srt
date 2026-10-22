@@ -19,8 +19,12 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      # v3 defaults to the removed 'tools' package (Google dropped it ~Sep 2026).
+      # v4 defaults to platform-tools only and skips the obsolete tools package.
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools
 
       - name: Install SDK packages
         run: |
@@ -32,7 +36,7 @@ jobs:
           chmod +x ./gradlew
           ./gradlew test assembleDebug --stacktrace --no-daemon
 
-      - name: Verify APK exists
+      - name: Verify APK exists and place single apkdebug.apk in output/
         run: |
           APK=$(find app/build/outputs/apk/debug -type f -name '*.apk' | head -n 1)
           if [ -z "$APK" ] || [ ! -s "$APK" ]; then
@@ -42,10 +46,16 @@ jobs:
           echo "APK_PATH=$APK"
           ls -lh "$APK"
           unzip -t "$APK" >/dev/null
+          mkdir -p output
+          cp "$APK" output/apkdebug.apk
+          ls -lh output/apkdebug.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: srt-color-section-studio-debug
-          path: app/build/outputs/apk/debug/*.apk
+          path: |
+            output/apkdebug.apk
+            app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
+
